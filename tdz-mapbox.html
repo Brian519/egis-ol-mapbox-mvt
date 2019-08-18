@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mapbox GL JS debug page</title>
+    <meta charset='utf-8'>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        html,
+        body,
+        #map {
+            height: 100%;
+        }
+        .layerPanel {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            background: #ffffff;
+            padding: 5px 2px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id='map'></div>
+    <div class="layerPanel">
+        <label><input type="radio" name="map" id="vt" onchange="switchLayer(this.id,this.checked)"
+                checked="checked">矢量切片</label>
+        <label><input type="radio" name="map" id="geotile" onchange="switchLayer(this.id,this.checked)">栅格切片</label>
+        <label><input type="radio" name="map" id="json" onchange="switchLayer(this.id,this.checked)">GEOJSON</label>
+    </div>
+    <script src="./vendor/mapbox-gl.js"></script>
+    <script>
+        let center = [116.39, 39.91];
+        let url='http://localhost:8080/map/api/v1/styles/1';
+        var map = window.map = new mapboxgl.Map({
+            container: 'map',
+            epsg: 'EPSG:4490',
+            hash: true,
+            style: ''
+        });
+        this.map.setStyle(url)
+
+        map.on("zoomend",function (e) {
+            console.log(map.getZoom())
+        })
+        console.log(map)
+
+
+    </script>
+</body>
+</html>

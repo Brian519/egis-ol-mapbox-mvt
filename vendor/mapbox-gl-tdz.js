@@ -30153,7 +30153,7 @@
     });
 
     //
-
+    window.mapboxgl = mapboxgl;
     return mapboxgl;
 
 }));

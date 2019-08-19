@@ -31,8 +31,9 @@
     <script src="./node_modules/leaflet/dist/leaflet-src.js"></script>
 
     <!-- Mapbox GL -->
-    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.0/mapbox-gl.css" rel='stylesheet'/>
-    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.0/mapbox-gl.js"></script>
+    <link href="http://yjqz.geo-compass.com/static/lib/mapboxgl/mapbox-gl.css" rel='stylesheet'/>
+   <!-- <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.0/mapbox-gl.js"></script>-->
+    <script src="http://yjqz.geo-compass.com/static/lib/mapboxgl/mapbox-gl.js"></script>
     <!--<script src="./vendor/mapbox-gl.js"></script>-->
     <!--<script src="./node_modules/mapbox-gl/dist/mapbox-gl-dev.js"></script>-->
 
@@ -54,6 +55,7 @@
 
 <body>
 <div id="map"></div>
+<div style="position: absolute;bottom:10px;left:10px;" id="zoomLevel"></div>
 <script src="MVTLayerTest.js"></script>
 </body>
 </html>

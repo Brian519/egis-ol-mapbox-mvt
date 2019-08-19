@@ -35,10 +35,12 @@
     <script src="./vendor/mapbox-gl.js"></script>
     <script>
         let center = [116.39, 39.91];
-        let url='http://localhost:8080/map/api/v1/styles/1';
+        let url='http://10.18.1.185/api/v1/styles/1';
         var map = window.map = new mapboxgl.Map({
             container: 'map',
             epsg: 'EPSG:4490',
+            center:[0,0],
+            zoom:1,
             hash: true,
             style: ''
         });

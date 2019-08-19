@@ -35,12 +35,12 @@ var MVTLayer = function (ImageLayer) {
 
         this.options = opt_options;
         var options = opt_options ? opt_options : {};
-        options.source = new ImageCanvasSource({
+        /*options.source = new ImageCanvasSource({
             canvasFunction: function () {
                 return mapCanvas.getContext("2d");
             },
-            projection: "EPSG:3857"
-        });
+            projection: "EPSG:4490"
+        });*/
         options.opacity = 0.5;
         ImageLayer.call(/** @type {import("./Vector.js").Options} */ this, (options));
 
@@ -104,11 +104,11 @@ var MVTLayer = function (ImageLayer) {
 
         var options = L.extend({}, this.options, {
             container: this._glContainer,
-            epsg: "EPSG:3857",
+            epsg: "EPSG:4490",
             canvas: mapCanvas,
             interactive: false,
             center: cc, // [center.lng, center.lat],
-            zoom: view.getZoom() - 1,
+            zoom: view.getZoom()-1,
             style: this.options.glStyle,
             attributionControl: false,
             attribution: null,
@@ -191,9 +191,9 @@ var MVTLayer = function (ImageLayer) {
         //
         // this._offset = this._map.containerPointToLayerPoint([0, 0]);
 
-        if (this._zooming) {
+      /*  if (this._zooming) {
             return;
-        }
+        }*/
 
         var mapContainer = map.getTargetElement();
         var size = owner._getSize();
@@ -211,7 +211,7 @@ var MVTLayer = function (ImageLayer) {
         L.DomUtil.setPosition(container, topLeft);
 
         var mapCenter = view.getCenter();
-        const ccc = transform(mapCenter, "EPSG:3857", "EPSG:4326");
+        const ccc = transform(mapCenter, "EPSG:4490", "EPSG:4490");
         var center = {
             lng: ccc[0],
             lat: ccc[1]
@@ -222,7 +222,7 @@ var MVTLayer = function (ImageLayer) {
 
         var tr = gl.transform;
         tr.center = mapboxgl.LngLat.convert([center.lng, center.lat]);
-        tr.zoom = view.getZoom() - 1;
+        tr.zoom = view.getZoom()-1;
 
         if (gl.transform.width !== size.x || gl.transform.height !== size.y) {
             container.style.width = size.x + 'px';

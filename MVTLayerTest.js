@@ -2,7 +2,7 @@ import Map from 'ol/Map.js';
 import View from 'ol/View.js';
 import MVT from 'ol/format/MVT.js';
 import VectorTileLayer from 'ol/layer/VectorTile.js';
-import {get as getProjection} from 'ol/proj.js';
+import {get as getProjection,addProjection} from 'ol/proj.js';
 import VectorTileSource from 'ol/source/VectorTile.js';
 import {Fill, Icon, Stroke, Style, Text} from 'ol/style.js';
 import TileGrid from 'ol/tilegrid/TileGrid.js';
@@ -12,6 +12,8 @@ import TileWMS from 'ol/source/TileWMS.js';
 
 import OSM from "ol/source/OSM";
 import XYZ from "ol/source/XYZ";
+import Projection from 'ol/proj/Projection';
+import addPlotLayer from './addPlotLayer';
 
 import MVTLayer from "./MVTLayer";
 
@@ -39,7 +41,7 @@ function tileUrlFunction(tileCoord) {
 var layer = new MVTLayer({
     accessToken: 'pk.eyJ1IjoibGVla29uZyIsImEiOiJjanpmbnJkcWkwOG9jM2hvb2pwb2Fydmx1In0.KLZQvGAcjo5D88f43E4xhA',
     // style: "http://yjqz.geo-compass.com/api/v1/styles/1"
-    glStyle: 'https://raw.githubusercontent.com/osm2vectortiles/mapbox-gl-styles/master/styles/bright-v9-cdn.json',
+    glStyle: 'http://10.18.1.185/api/v1/styles/1',
 
     // source: new VectorTileSource({
     //     attributions: '© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> ' +
@@ -81,25 +83,63 @@ var layer3 = new TileLayer({
     })
 });
 
+var proj = new Projection({
+    axisOrientation: 'neu',
+    code: 'EPSG:4490',
+    units: 'degress',
+    extent: [-180, -90, 180, 90],
+    worldExtent: [-180, -90, 180, 90],
+    global: true
+});
+addProjection(proj);
 
+var tdtServer = "http://10.18.17.17:81";
+
+//创建图层(xyz方式)
+function crtLayerXYZ(type, proj, opacity){
+    var layer = new TileLayer({
+        source: new XYZ({
+            url: tdtServer+'/DataServer?T='+type+'&x={x}&y={y}&l={z}',
+            projection: proj
+        }),
+        opacity: opacity
+    });
+    layer.id = type;
+    return layer;
+}
+
+
+
+// 创建 天地图矢量 瓦片图层
+var tiandituvec = crtLayerXYZ('vec_c',proj,1);
 
 var map = new Map({
     layers: [
-        layer3,
-        layer
+        ///tiandituvec,
+        layer,
     ],
     target: 'map',
     view: new View({
-        projection: 'EPSG:3857',
+        projection: 'EPSG:4490',
         center: [0, 0],
         minZoom: 1,
         zoom: 2
     })
 });
 
-
 setTimeout(function () {
     layer.setOpacity(0.6);
 }, 3000);
 
 layer.init(map);
+addPlotLayer(map)
+
+function setZoomLevel() {
+    var zoomLevel = document.getElementById("zoomLevel");
+    zoomLevel.innerHTML="级别:"+map.getView().getZoom();
+}
+setZoomLevel();
+//查看zoom层级
+map.getView().on("change:resolution", function (e) {
+    setZoomLevel();
+})

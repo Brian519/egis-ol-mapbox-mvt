@@ -1,79 +1,127 @@
-import VectorTileLayer from "ol/layer/VectorTile";
 import ImageLayer from "ol/layer/Image";
-import ImageCanvasSource from "ol/source/ImageCanvas";
-import {transform} from "ol/proj"
-
-import Layer from "ol/layer/Layer";
-
-// var mapboxgl = require("./node_modules/mapbox-gl/dist/mapbox-gl-dev");
-// var mapboxgl = require("./vendor/mapbox-gl-tdz");
 
 
-//
-// var MVTLayer = /*@__PURE__*/(function (VectorTileLayer) {
-//     function MVTLayer(opt_options) {
-//         var options = opt_options ? opt_options : {};
-//         VectorTileLayer.call(/** @type {import("./Vector.js").Options} */ this, (options));
-//     }
-//
-//     if ( VectorTileLayer ) MVTLayer.__proto__ = VectorTileLayer;
-//     MVTLayer.prototype = Object.create( VectorTileLayer && VectorTileLayer.prototype );
-//     MVTLayer.prototype.constructor = MVTLayer;
-//
-//     return MVTLayer;
-// }(VectorTileLayer));
-//
-//
-// MVTLayer.prototype.getSource;
-// export default MVTLayer;
-var mapCanvas = document.createElement("canvas");
+function extend(dest) {
+    var i, j, len, src;
 
-var padding = 0.0;
+    for (j = 1, len = arguments.length; j < len; j++) {
+        src = arguments[j];
+        for (i in src) {
+            dest[i] = src[i];
+        }
+    }
+    return dest;
+}
 
-var MVTLayer = function (ImageLayer) {
+
+function addClass(el, name) {
+    if (el.classList !== undefined) {
+        var classes = splitWords(name);
+        for (var i = 0, len = classes.length; i < len; i++) {
+            el.classList.add(classes[i]);
+        }
+    } else if (!hasClass(el, name)) {
+        var className = getClass(el);
+        setClass(el, (className ? className + ' ' : '') + name);
+    }
+
+    function trim(str) {
+        return str.trim ? str.trim() : str.replace(/^\s+|\s+$/g, '');
+    }
+
+    function splitWords(str) {
+        return trim(str).split(/\s+/);
+    }
+
+    function hasClass(el, name) {
+        if (el.classList !== undefined) {
+            return el.classList.contains(name);
+        }
+        var className = getClass(el);
+        return className.length > 0 && new RegExp('(^|\\s)' + name + '(\\s|$)').test(className);
+    }
+
+    function setClass(el, name) {
+        if (el.className.baseVal === undefined) {
+            el.className = name;
+        } else {
+            // in case of SVG element
+            el.className.baseVal = name;
+        }
+    }
+
+
+    function getClass(el) {
+        // Check if the element is an SVGElementInstance and use the correspondingElement instead
+        // (Required for linked SVG elements in IE11.)
+        if (el.correspondingElement) {
+            el = el.correspondingElement;
+        }
+        return el.className.baseVal === undefined ? el.className : el.className.baseVal;
+    }
+
+}
+
+function LPoint(x, y, round) {
+    // @property x: Number; The `x` coordinate of the point
+    this.x = (round ? Math.round(x) : x);
+    // @property y: Number; The `y` coordinate of the point
+    this.y = (round ? Math.round(y) : y);
+}
+
+LPoint.prototype.clone = function(){
+    return new LPoint(this.x, this.y);
+};
+
+
+LPoint.prototype.multiplyBy = function (num) {
+    return this.clone()._multiplyBy(num);
+};
+
+LPoint.prototype._multiplyBy = function (num) {
+    this.x *= num;
+    this.y *= num;
+    return this;
+},
+
+
+
+    LPoint.prototype.subtract = function (point) {
+        return this.clone()._subtract(point);
+    };
+
+LPoint.prototype._subtract = function (point) {
+    this.x -= point.x;
+    this.y -= point.y;
+    return this;
+};
+
+
+
+
+~function (ImageLayer) {
+    var mapCanvas = document.createElement("canvas");
+
+    var padding = 0.0;
     function MVTLayer(opt_options) {
 
         this.options = opt_options;
         var options = opt_options ? opt_options : {};
-        /*options.source = new ImageCanvasSource({
-            canvasFunction: function () {
-                return mapCanvas.getContext("2d");
-            },
-            projection: "EPSG:4490"
-        });*/
-        options.opacity = 0.5;
+        // options.source = new ol.source.ImageCanvas({
+        //     canvasFunction: function () {
+        //         return mapCanvas;
+        //     },
+        //     projection: "EPSG:3857"
+        // });
+        //options.opacity = 0.5;
         ImageLayer.call(/** @type {import("./Vector.js").Options} */ this, (options));
 
 
     }
 
-    if (ImageLayer) MVTLayer.__proto__ = ImageLayer;
-    MVTLayer.prototype = Object.create(ImageLayer && ImageLayer.prototype);
+    //if (ImageLayer) MVTLayer.__proto__ = ImageLayer;
+    MVTLayer.prototype = Object.create(ImageLayer.prototype);
     MVTLayer.prototype.constructor = MVTLayer;
-
-    // accessToken: "pk.eyJ1IjoibGVla29uZyIsImEiOiJjanpmbnJkcWkwOG9jM2hvb2pwb2Fydmx1In0.KLZQvGAcjo5D88f43E4xhA"
-    // attribution: null
-    // attributionControl: false
-    // bubblingMouseEvents: true
-    // center: (2) [-77.032194, 38.912753]
-    // container: div.leaflet-gl-layer
-    // interactive: false
-    // padding: 0.15
-    // pane: "overlayPane"
-    // style: "https://raw.githubusercontent.com/osm2vectortiles/mapbox-gl-styles/master/styles/bright-v9-cdn.json"
-    // updateInterval: 32
-    // zoom: 14
-
-    // ccessToken: "pk.eyJ1IjoibGVla29uZyIsImEiOiJjanpmbnJkcWkwOG9jM2hvb2pwb2Fydmx1In0.KLZQvGAcjo5D88f43E4xhA"
-    // attributionControl: false
-    // center: {lng: 0, lat: 0}
-    // container: div#map
-    // glStyle: "https://raw.githubusercontent.com/osm2vectortiles/mapbox-gl-styles/master/styles/bright-v9-cdn.json"
-    // interactive: false
-    // renderMode: "hybrid"
-    // style: "https://raw.githubusercontent.com/osm2vectortiles/mapbox-gl-styles/master/styles/bright-v9-cdn.json"
-    // zoom: 1
-    // __proto_
 
     MVTLayer.prototype.init = function init(map) {
         this._map = map;
@@ -85,49 +133,32 @@ var MVTLayer = function (ImageLayer) {
         var target = map.getTarget();
         var targetEle = map.getTargetElement();
 
-        // var parentEle = targetEle.getElementsByClassName("ol-viewport")[0];
-        // var before = parentEle.children[0];
-        // parentEle.insertBefore(this._glContainer, before);
-        //
-        // parentEle.appendChild(this._glContainer);
+
 
         var view = this._map.getView();
         var center = view.getCenter();
-        const ccc = transform(center, "EPSG:3857", "EPSG:4326");
+        //const ccc = ol.proj.transform(center, "EPSG:3857", "EPSG:4326");
         var cc = {
-            lng: ccc[0],
-            lat: ccc[1]
+            lng: center[0],
+            lat: center[1]
         };
 
-        var ctx = mapCanvas.getContext('2d');
-        // ctx.globalAlpha = 0.5;
 
-        var options = L.extend({}, this.options, {
+        var options = extend({}, this.options, {
             container: this._glContainer,
             epsg: "EPSG:4490",
-            canvas: mapCanvas,
+           // canvas: mapCanvas,
             interactive: false,
             center: cc, // [center.lng, center.lat],
-            zoom: view.getZoom()-1,
+            zoom: view.getZoom(),
             style: this.options.glStyle,
             attributionControl: false,
             attribution: null,
             bubblingMouseEvents: true,
-            padding: padding,
+            //padding: padding,
             hash: true,
             updateInterval: 32
         });
-
-
-
-        // let url='http://localhost:8080/map/api/v1/styles/1';
-        // var map = window.map = new mapboxgl.Map({
-        //     container: 'map',
-        //     epsg: 'EPSG:4490',
-        //     hash: true,
-        //     style: ''
-        // });
-        // this.map.setStyle(url)
 
         this._glMap = new mapboxgl.Map(options);
 
@@ -135,10 +166,9 @@ var MVTLayer = function (ImageLayer) {
         this._glMap.transform.latRange = null;
         this._glMap._actualCanvas = this._glMap._canvas;
 
-        L.DomUtil.addClass(this._glMap._actualCanvas, 'leaflet-image-layer');
-        L.DomUtil.addClass(this._glMap._actualCanvas, 'leaflet-zoom-animated');
-        // L.DomUtil.addClass(this._glContainer, 'ol-viewport');
-        // L.DomUtil.addClass(this._glContainer, 'mapbox-map');
+        addClass(this._glMap._actualCanvas, 'leaflet-image-layer');
+        addClass(this._glMap._actualCanvas, 'leaflet-zoom-animated');
+
 
         map.on("postrender", this.render);
         map.on("movestart", this.movestart);
@@ -160,24 +190,26 @@ var MVTLayer = function (ImageLayer) {
         var size = this._getSize();
 
         var viewSize = map.getSize();
-        var p = new L.Point(viewSize[0], viewSize[1]);
+        var p = new LPoint(viewSize[0], viewSize[1]);
         var offset = p.multiplyBy(0.15);
 
         container.style.width = size.x + 'px';
         container.style.height = size.y + 'px';
 
-        var cp = new L.Point(0, 0);
+     /*   var cp = new LPoint(0, 0);
         var cp2 = cp.subtract(offset);
         var topLeft = cp2;
 
-        L.DomUtil.setPosition(container, topLeft);
+        L.DomUtil.setPosition(container, topLeft);*/
     }
 
 
     MVTLayer.prototype._getSize = function _getSize() {
         var size = this._map.getSize();
-        var p = new L.Point(size[0], size[1]);
-        return p.multiplyBy(1 + padding * 2);
+        var p = new LPoint(size[0], size[1]);
+        // return p.multiplyBy(1 + padding * 2);
+        return p
+
     }
 
     MVTLayer.prototype.render = function render(e) {
@@ -187,13 +219,11 @@ var MVTLayer = function (ImageLayer) {
         var map = e.map;
         var view = map.getView();
 
-        // L.DomUtil.getPosition(this._mapPane) || new L.Point(0, 0);
-        //
-        // this._offset = this._map.containerPointToLayerPoint([0, 0]);
 
-      /*  if (this._zooming) {
+
+        if (this._zooming) {
             return;
-        }*/
+        }
 
         var mapContainer = map.getTargetElement();
         var size = owner._getSize();
@@ -201,28 +231,28 @@ var MVTLayer = function (ImageLayer) {
         var gl = owner._glMap;
 
         var viewSize = map.getSize();
-        var p = new L.Point(viewSize[0], viewSize[1]);
+  /*      var p = new L.Point(viewSize[0], viewSize[1]);
         var offset = p.multiplyBy(padding); // this._map.getSize().multiplyBy(this.options.padding);
 
         var cp = new L.Point(0, 0);
         var cp2 = cp.subtract(offset);
         var topLeft = cp2; // this._map.containerPointToLayerPoint([0, 0]).subtract(offset);
 
-        L.DomUtil.setPosition(container, topLeft);
+        L.DomUtil.setPosition(container, topLeft);*/
 
         var mapCenter = view.getCenter();
-        const ccc = transform(mapCenter, "EPSG:4490", "EPSG:4490");
+       /* const ccc = ol.proj.transform(mapCenter, "EPSG:3857", "EPSG:4326");
         var center = {
             lng: ccc[0],
             lat: ccc[1]
-        }
+        }*/
 
         // gl.setView([center.lat, center.lng], this._map.getZoom() - 1, 0);
         // calling setView directly causes sync issues because it uses requestAnimFrame
 
         var tr = gl.transform;
-        tr.center = mapboxgl.LngLat.convert([center.lng, center.lat]);
-        tr.zoom = view.getZoom()-1;
+        tr.center = mapboxgl.LngLat.convert([mapCenter[0], mapCenter[1]]);
+        tr.zoom = view.getZoom();
 
         if (gl.transform.width !== size.x || gl.transform.height !== size.y) {
             container.style.width = size.x + 'px';
@@ -258,12 +288,14 @@ var MVTLayer = function (ImageLayer) {
         const ele = eles[0];
         ele.style.opacity = 0.6;
 
-       //  const ctx2 = ele.getContext("2d");
+        //  const ctx2 = ele.getContext("2d");
     }
 
-    return MVTLayer;
-}(ImageLayer)
+    window.MVTLayer = MVTLayer;
 
-export default MVTLayer;
+}(ImageLayer)
+export default MVTLayer
+
+
 
 //# sourceMappingURL=VectorTile.js.map

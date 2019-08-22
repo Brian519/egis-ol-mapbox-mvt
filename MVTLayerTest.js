@@ -41,8 +41,8 @@ function tileUrlFunction(tileCoord) {
 var layer = new MVTLayer({
     accessToken: 'pk.eyJ1IjoibGVla29uZyIsImEiOiJjanpmbnJkcWkwOG9jM2hvb2pwb2Fydmx1In0.KLZQvGAcjo5D88f43E4xhA',
     // style: "http://yjqz.geo-compass.com/api/v1/styles/1"
-    glStyle: 'http://10.18.1.185/api/v1/styles/1',
-
+    //glStyle: 'http://10.18.1.185/api/v1/styles/1',
+    glStyle: './1.json',
     // source: new VectorTileSource({
     //     attributions: '© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> ' +
     //         '© <a href="https://www.openstreetmap.org/copyright">' +
@@ -94,12 +94,13 @@ var proj = new Projection({
 addProjection(proj);
 
 var tdtServer = "http://10.18.17.17:81";
+tdtServer = "http://t4.tianditu.gov.cn";
 
 //创建图层(xyz方式)
 function crtLayerXYZ(type, proj, opacity){
     var layer = new TileLayer({
         source: new XYZ({
-            url: tdtServer+'/DataServer?T='+type+'&x={x}&y={y}&l={z}',
+            url: tdtServer+'/DataServer?T='+type+'&x={x}&y={y}&l={z}&tk=4f62e1d82bd46e2ff470b291c2260156',
             projection: proj
         }),
         opacity: opacity
@@ -113,17 +114,25 @@ function crtLayerXYZ(type, proj, opacity){
 // 创建 天地图矢量 瓦片图层
 var tiandituvec = crtLayerXYZ('vec_c',proj,1);
 
+//创建地图分辨率相关参数参数，天地图默认从1级别开始切片，同步1级别
+var topResolution = 360.0 / 512;
+var res1 = [];
+for (var zoom = 1; zoom < 22; zoom++) {
+    res1[zoom] = topResolution / Math.pow(2, zoom);
+}
+
 var map = new Map({
     layers: [
-        ///tiandituvec,
+        tiandituvec,
         layer,
     ],
     target: 'map',
     view: new View({
         projection: 'EPSG:4490',
-        center: [0, 0],
+        center: [116, 40],
         minZoom: 1,
-        zoom: 2
+        resolutions:res1,
+        zoom: 11
     })
 });
 
@@ -143,3 +152,4 @@ setZoomLevel();
 map.getView().on("change:resolution", function (e) {
     setZoomLevel();
 })
+

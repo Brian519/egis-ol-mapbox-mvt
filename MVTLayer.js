@@ -170,11 +170,12 @@ LPoint.prototype._subtract = function (point) {
         addClass(this._glMap._actualCanvas, 'leaflet-zoom-animated');
 
 
-        map.on("postrender", this.render);
-        map.on("movestart", this.movestart);
-        map.on("moveend", this.moveend);
+        map.getView().on("propertychange",this.render)
+       // map.on("postrender", this.render);
+       /* map.on("movestart", this.render);
+        map.on("moveend", this.render);*/
         map["owner"] = this;
-
+        map.getView().map = map;
     }
 
     MVTLayer.prototype._initContainer = function _initContainer() {
@@ -213,7 +214,7 @@ LPoint.prototype._subtract = function (point) {
     }
 
     MVTLayer.prototype.render = function render(e) {
-
+        var e = e.target;
         var owner = e.map['owner'];
 
         var map = e.map;

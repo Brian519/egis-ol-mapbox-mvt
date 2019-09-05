@@ -10,13 +10,13 @@ import VectorLayer from 'ol/layer/Vector';
 function addPlotLayer(map) {
     //创建一个多变形
     var polygon = new Feature({
-        geometry: new Polygon([[[116.339811227417, 39.87178623809814], [116.33509053955079, 39.86809674072265], [116.34280235443116,39.86818257141113],[116.339811227417, 39.87178623809814]]])
+        geometry: new Polygon([[[113.339811227417, 35.87178623809814], [114.33509053955079, 25.86809674072265], [116.34280235443116,39.86818257141113],[113.339811227417, 35.87178623809814]]])
     });
 //设置区样式信息
     polygon.setStyle(new Style({
         //填充色
         fill: new Fill({
-            color: 'rgba(255, 255, 255, 0.5)'
+            color: 'red'
         }),
         //边线颜色
         stroke: new Stroke({

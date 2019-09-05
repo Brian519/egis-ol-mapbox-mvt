@@ -41,8 +41,8 @@ function tileUrlFunction(tileCoord) {
 var layer = new MVTLayer({
     accessToken: 'pk.eyJ1IjoibGVla29uZyIsImEiOiJjanpmbnJkcWkwOG9jM2hvb2pwb2Fydmx1In0.KLZQvGAcjo5D88f43E4xhA',
     // style: "http://yjqz.geo-compass.com/api/v1/styles/1"
-    //glStyle: 'http://10.18.1.185/api/v1/styles/1',
-    glStyle: './1.json',
+    glStyle: 'http://10.18.1.185/api/v1/styles/1',
+    //glStyle: './1.json',
     // source: new VectorTileSource({
     //     attributions: '© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> ' +
     //         '© <a href="https://www.openstreetmap.org/copyright">' +
@@ -123,7 +123,7 @@ for (var zoom = 1; zoom < 22; zoom++) {
 
 var map = new Map({
     layers: [
-        tiandituvec,
+        //tiandituvec,
         layer,
     ],
     target: 'map',
